@@ -8,5 +8,45 @@
 <body>
   <h1>AI Video Copilot</h1>
   <p>输入视频需求，让 AI 帮你生成视频脚本。</p>
+
+  <label>视频主题：</label>
+  <input id="topic" value="广州文旅">
+
+  <br><br>
+
+  <label>视频时长：</label>
+  <input id="duration" type="number" value="30">
+
+  <br><br>
+
+  <label>视频风格：</label>
+  <input id="style" value="电影感">
+
+  <br><br>
+
+  <label>目标受众：</label>
+  <input id="audience" value="20-30岁年轻游客">
+
+  <br><br>
+
+  <button id="generateBtn">生成视频需求</button>
+
+  <pre id="result">等待输入...</pre>
+
+  <script>
+    const button = document.getElementById("generateBtn");
+    const result = document.getElementById("result");
+
+    button.addEventListener("click", () => {
+      const videoData = {
+        video_topic: document.getElementById("topic").value,
+        video_duration: Number(document.getElementById("duration").value),
+        video_style: document.getElementById("style").value,
+        target_audience: document.getElementById("audience").value
+      };
+
+      result.textContent = JSON.stringify(videoData, null, 2);
+    });
+  </script>
 </body>
 </html>
