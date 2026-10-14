@@ -60,3 +60,37 @@ AI Video Copilot 将用户的视频需求拆分成结构化参数，例如：
   "video_style": "电影感",
   "target_audience": "20-30岁年轻游客"
 }
+```
+---
+
+## Demo Evidence｜项目证据
+
+### 1. Workflow｜完整工作流
+
+下图展示 AI Video Copilot 当前真实 Workflow，包括需求解析、信息完整性判断、需求澄清、时长分支以及最终脚本生成。
+
+![AI Video Copilot Workflow](docs/workflow.png)
+
+---
+
+### 2. 参数完整｜成功生成脚本
+
+当用户提供完整的视频需求后，Workflow 可以正常执行并生成最终视频脚本。
+
+![Demo Success](docs/demo-success.png)
+
+---
+
+### 3. 参数缺失｜主动澄清需求
+
+当用户没有提供完整参数时，系统不会直接猜测，而是进入需求澄清流程，向用户询问缺失的信息。
+
+![Missing Params](docs/demo-missing-params.png)
+
+---
+
+### 4. Test Cases｜测试记录
+
+👉 [查看完整测试记录](docs/test-cases.md)
+
+---
