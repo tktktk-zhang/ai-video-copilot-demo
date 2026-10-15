@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Video Copilot - First Model Call</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.6;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 10px 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .info {
+      margin-top: 24px;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .meta {
+      margin-bottom: 12px;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      background: #f6f6f6;
+      padding: 14px;
+      border-radius: 6px;
+    }
+
+    .error {
+      color: #b00020;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>AI Video Copilot</h1>
+
+  <p>
+    输入视频需求，后端将安全调用模型 API，并返回脚本、状态码和耗时。
+  </p>
+
+  <textarea
+    id="prompt"
+    placeholder="例如：帮我生成一个30秒广州文旅短视频脚本，文艺风格，面向20-30岁年轻游客。"
+  ></textarea>
+
+  <br />
+
+  <button id="generateBtn">生成脚本</button>
+
+  <div id="result" class="info">
+    <div class="meta">
+      <strong>Status：</strong>
+      <span id="status">等待调用</span>
+    </div>
+
+    <div class="meta">
+      <strong>Model：</strong>
+      <span id="model">-</span>
+    </div>
+
+    <div class="meta">
+      <strong>Latency：</strong>
+      <span id="latency">-</span>
+    </div>
+
+    <div>
+      <strong>Output：</strong>
+      <div id="output" class="output">等待模型返回结果...</div>
+    </div>
+  </div>
+
+  <script>
+    const button = document.getElementById("generateBtn");
+    const promptInput = document.getElementById("prompt");
+
+    const statusEl = document.getElementById("status");
+    const modelEl = document.getElementById("model");
+    const latencyEl = document.getElementById("latency");
+    const outputEl = document.getElementById("output");
+
+    button.addEventListener("click", async () => {
+      const prompt = promptInput.value.trim();
+
+      statusEl.textContent = "请求中...";
+      modelEl.textContent = "-";
+      latencyEl.textContent = "-";
+      outputEl.textContent = "正在调用模型...";
+      outputEl.classList.remove("error");
+
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        statusEl.textContent = data.status ?? response.status;
+
+        if (data.success) {
+          modelEl.textContent = data.model || "-";
+          latencyEl.textContent =
+            data.latency_ms !== undefined
+              ? `${data.latency_ms} ms`
+              : "-";
+
+          outputEl.textContent = data.output || "没有返回内容";
+        } else {
+          latencyEl.textContent =
+            data.latency_ms !== undefined
+              ? `${data.latency_ms} ms`
+              : "-";
+
+          outputEl.textContent = data.error || "请求失败";
+          outputEl.classList.add("error");
+        }
+
+      } catch (error) {
+        statusEl.textContent = "Network Error";
+        outputEl.textContent = "无法连接服务器，请检查后端是否启动。";
+        outputEl.classList.add("error");
+      }
+    });
+  </script>
+</body>
+</html>
